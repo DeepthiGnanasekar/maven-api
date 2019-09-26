@@ -27,7 +27,6 @@ public class CanServiceController {
 	   		}
 	   		JsonObject json = new JsonObject();
 	   		if (message != null) {
-
 	   			json.addProperty("message", message);
 	   		} else if (errorMessage != null) {
 	   			json.addProperty("errorMessage", errorMessage);
@@ -54,7 +53,6 @@ public class CanServiceController {
 	   		}
 	   		JsonObject json = new JsonObject();
 	   		if (message != null) {
-
 	   			json.addProperty("message", message);
 	   		} else if (errorMessage != null) {
 	   			json.addProperty("errorMessage", errorMessage);
