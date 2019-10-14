@@ -1,16 +1,18 @@
 package controller;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import dao.AvailabilityDao;
 import dao.UserDao;
 import dao.UserDaoImp;
 import model.Availability;
-import model.Details;
+import model.OrderDetails;
+import model.ReserveDetails;
 import model.UserDetails;
 import service.CanService;
 
-public class CanServiceController {
+public class CanController {
 	CanService service = new CanService();
 	UserDaoImp userdao = new UserDao();
 	UserDetails user = new UserDetails();
@@ -18,23 +20,22 @@ public class CanServiceController {
 
 	public String orderCan(String orderCan, String mobile) {
 		String errorMessage = null;
-		String message = null;
 		UserDetails user = null;
+		int id = 0;
 		try {
 			int canOrder = Integer.parseInt(orderCan);
 			long number = Long.parseLong(mobile);
-			Availability availableStock=dao.getStock();
+			Availability availableStock = dao.getStock();
 			if (canOrder <= availableStock.getAvailability_List()) {
 				user = userdao.findByMobileNumber(number);
 				if (user == null) {
 					errorMessage = "Please enter valid mobile number";
 				} else {
-					Details details = null;
-					details = new Details();
+					OrderDetails details = null;
+					details = new OrderDetails();
 					details.setQuantyList(canOrder);
 					details.setNumber(number);
-					service.orderCan(details);
-					message = "Success";
+					id = service.orderCan(details);
 				}
 			} else {
 				errorMessage = "Please enter valid number of cans to order based on availability";
@@ -43,19 +44,22 @@ public class CanServiceController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		JsonObject json = new JsonObject();
-		if (message != null) {
-			json.addProperty("message", message);
+		String json = null;
+		 Gson gson = new Gson();
+		if (id != 0) {
+			json = gson.toJson(id);
 		} else if (errorMessage != null) {
-			json.addProperty("errorMessage", errorMessage);
+			JsonObject obj = new JsonObject();
+			obj.addProperty("errorMessage", errorMessage);
+			json = obj.toString();
 		}
-		return json.toString();
+		return json;
 	}
 
 	public String reserveCan(String reserveCan, String mobile) {
 		String errorMessage = null;
-		String message = null;
 		UserDetails user = null;
+		int id =0;
 		try {
 			int canReserve = Integer.parseInt(reserveCan);
 			long number = Long.parseLong(mobile);
@@ -64,27 +68,30 @@ public class CanServiceController {
 			{
 			user = userdao.findByMobileNumber(number);
 			if (user == null) {
-				throw new Exception("Please enter valid mobile number");
+				errorMessage= "Please enter valid mobile number";
 			} else {
-				Details details = null;
-				details = new Details();
+				ReserveDetails details = null;
+				details = new ReserveDetails();
 				details.setReservedList(canReserve);
 				details.setNumber(number);
-				service.reserveCan(details);
-				message = "Success";
+				id = service.reserveCan(details);
 			}
-			} else {
-				errorMessage = "Please enter valid number of cans to order based on availability";
-			}
-		} catch (Exception e) {
-			errorMessage = e.getMessage();
+		} else {
+			errorMessage = "Please enter valid number of cans to order based on availability";
 		}
-		JsonObject json = new JsonObject();
-		if (message != null) {
-			json.addProperty("message", message);
-		} else if (errorMessage != null) {
-			json.addProperty("errorMessage", errorMessage);
-		}
-		return json.toString();
+		
+	} catch (Exception e) {
+		e.printStackTrace();
 	}
-}
+	String json = null;
+	 Gson gson = new Gson();
+	if (id != 0) {
+		json = gson.toJson(id);
+	} else if (errorMessage != null) {
+		JsonObject obj = new JsonObject();
+		obj.addProperty("errorMessage", errorMessage);
+		json = obj.toString();
+	}
+	return json;
+	}
+	}

@@ -15,6 +15,7 @@ public class AdminController {
         	admin=new AdminDetails();
 			AdminService services = new AdminService();
 			admin=services.adminLogin(name, password); 
+			System.out.println(admin);
 			if(admin==null) {
             	throw new Exception("Invalid Crendentials...!!!");
             }

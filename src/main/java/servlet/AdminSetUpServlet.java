@@ -12,7 +12,7 @@ import controller.AvailabilityController;
 
 public class AdminSetUpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String can = request.getParameter("can");
         AvailabilityController user = new AvailabilityController();
 	        	   String json=user.setCan(can);
